@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+    <script src="js/get-book.js"></script>
+    <script src="js/search-books.js"></script>
+
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BookTrack</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/add-book.css">
+</head>
+<body>
+    <div class="header">
+        <h1>BookTrack V0.0.3</h1>
+        <div class="button-container">
+            <button class="add-book-btn" onclick="openForm()">Add Book</button>
+            <button class="open-library-btn" onclick="openModal()">Add borrow book Form</button>
+        </div>
+    </div>
+    <!-- Overlay to display a semi-transparent background when the form is open, closing form on click -->
+    <div class="overlay" id="overlay" onclick="resetForm()"></div>
+    <!-- START FOR ADD-BOOK FUNCTION -->
+
+    <!-- Container for the 'Add Book' form -->
+    <div class="form-container-addbook" id="formContainer">
+        <!-- Header for the form -->
+        <h2 class="form-header">Add a New Book</h2>
+        <div class="form-content">
+            <!-- Container to preview the selected image for the book -->
+            <div class="image-preview-container-addbook">
+                <div class="image-preview-addbook" id="imagePreview">
+                    <span>No Image Selected</span>
+                </div>
+                <div class="container">
+                    <!-- Spacing box to maintain consistent layout -->
+                    <div class="sized-box"></div>
+                </div>
+                <!-- Input field for selecting an image file -->
+                <input type="file" id="image" name="image" accept="image/*" class="file-input-addbook">
+                
+            </div>
+            <!-- Container for the book input fields in the form -->
+            <div class="form-fields-addbook">
+                <form id="bookForm" enctype="multipart/form-data">
+                    <!-- Form group for book title input -->
+                    <div class="form-group">
+                        <label for="title">Title:</label>
+                        <input type="text" id="title" name="title">
+                    </div>
+                    <!-- Form group for book author input -->
+                    <div class="form-group">
+                        <label for="author">Author:</label>
+                        <input type="text" id="author" name="author">
+                    </div>
+                    <!-- Form group for ISBN input -->
+                    <div class="form-group">
+                        <label for="isbn">ISBN:</label>
+                        <input type="text" id="isbn" name="isbn">
+                    </div>
+                    <!-- Form group for genre selection -->
+                    <div class="form-group">
+                        <label for="genre">Genre:</label>
+                        <select id="genre" name="genre">
+                            <option value="" disabled selected>Select Genre</option>
+                            <option value="Fiction">Fiction</option>
+                            <option value="Non-Fiction">Non-Fiction</option>
+                            <option value="Mystery">Mystery</option>
+                            <option value="Science Fiction">Science Fiction</option>
+                            <option value="Fantasy">Fantasy</option>
+                        </select>
+                    </div>
+                    <!-- Form group for available copies input -->
+                    <div class="form-group">
+                        <label for="copies">Available Copies:</label>
+                        <input type="number" id="copies" name="copies" min="1">
+                    </div>
+                </form>
+            </div>
+        </div>
+
+    <!-- Submit button positioned outside the form but within the form container -->
+    <div class="button-container">
+            <button type="submit" form="bookForm" class="submit-btn">Add Book</button>
+        </div>
+    </div>
+    
+    <!-- Link to the external JavaScript file for handling 'Add Book' form interactions -->
+    <script src="js/add-book.js"></script>
+    <!-- END FOR ADD-BOOK FUNCTION -->
+
+
+ 
+
+    <!-- Modal overlay and form container -->
+    <div class="modal-overlay" id="modalOverlay">
+    <div class="modal-container">
+        <span id="closeBtn" class="close-btn" onclick="closeModal()">&times;</span>
+        <h1 id="formTitle" class="form-title">Add Library Book Borrowing  </h1>
+        <form id="transactionForm">
+            <label for="book_id">Book ID</label>
+            <input type="text" id="book_id" name="book_id" placeholder="Enter Book ID" required>
+
+            <label for="borrower_name">Borrower Name</label>
+            <input type="text" id="borrower_name" name="borrower_name" placeholder="Enter Borrower Name" required>
+
+            <label for="borrowDate">Borrow Date</label>
+            <input type="date" id="borrowDate" name="borrowDate" required>
+
+            <label for="returnDate">Return Date</label>
+            <input type="date" id="returnDate" name="returnDate" required>
+
+            <button id="submitBtn" type="button" onclick="addTransaction()">Submit</button>
+        </form>
+        <p id="message" class="message"></p>
+    </div>
+</div>
+
+
+
+
+    <!-- Link to the external JavaScript file for form functionality -->
+<script src="js/add-transaction.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+
+<body onload="getBooks()">
+  
+    <br>
+    <div id="search-container">
+        <div id="input-container">
+            <input type="text" id="searchInput" placeholder="Search books..." oninput="toggleClearButton()">
+            <button id="clearSearchBtn" onclick="clearSearch()" style="display: none;">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <button id="searchButton" onclick="searchBooks()">Search</button>
+    </div>
+    
+    <div id="loading" style="display: none; text-align: center; font-size: 18px;">
+        Loading books, please wait...
+    </div>
+
+    <div id="bookContainer"></div>
+    <!-- Modal for Book Details -->
+    <div id="bookModal" class="modal" style="display:none;">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()" style="cursor:pointer;">&times;</span>
+            <div id="modalBookDetailContainer"></div>
+        </div>
+    </div>
+ 
+</body>
+
+<body>  
+    <div class="edit-overlay" id="edit-overlay" onclick="closeForm()"></div>
+    <!-- Container for the edit book form, initially hidden -->
+    <div class="form-container" id="editFormContainer" style="display: none;">
+        <h2 style="text-align: center;">Edit Book Details</h2>
+        <div class="form-content">
+            <!-- Image Preview -->
+            <div>
+                <img id="editBookPreviewImage" class="image-preview" src="#" alt="Book Image Preview"
+                    style="display: none;" />
+            </div>
+
+            <!-- Form Fields -->
+            <div class="form-fields">
+                <form id="editBookForm" enctype="multipart/form-data">
+                    <div class="form-group">
+                        <label for="editTitle">Title:</label>
+                        <input type="text" id="editTitle" name="title" class="form-input" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="editAuthor">Author:</label>
+                        <input type="text" id="editAuthor" name="author"  class="form-input"required>
+                    </div>
+                    <div class="form-group">
+                        <label for="editIsbn">ISBN:</label>
+                        <input type="text" id="editIsbn" name="isbn" class="form-input" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="editGenre">Genre:</label>
+                        <select id="editGenre" name="genre" required>
+                            <option value="" disabled>Select Genre</option>
+                            <option value="Fiction">Fiction</option>
+                            <option value="Non-Fiction">Non-Fiction</option>
+                            <option value="Mystery">Mystery</option>
+                            <option value="Science Fiction">Science Fiction</option>
+                            <option value="Fantasy">Fantasy</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="editCopies">Available Copies:</label>
+                        <input type="number" id="editCopies" name="availableCopies" min="1" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="editImage">Upload New Image:</label>
+                        <input type="file" id="editImage" name="image" accept="image/*">
+                    </div>
+                    <input type="hidden" id="editBookId" name="bookId">
+                    <button type="submit" class="submit-btn">Update Book</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+<script src="js/update-book.js"></script>
+</body>
+
+</html>
